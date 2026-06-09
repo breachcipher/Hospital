@@ -9,6 +9,7 @@ public class DashboardForm extends JFrame {
     
     private JPanel contentPanel;
     private CardLayout cardLayout;
+    private JPanel sidebar; // Deklarasikan sebagai field
     
     public DashboardForm() {
         setTitle("Hospital Management System - Dashboard");
@@ -18,10 +19,10 @@ public class DashboardForm extends JFrame {
         setLayout(new BorderLayout());
         
         // Sidebar Panel
-        JPanel sidebar = new JPanel();
+        sidebar = new JPanel();
         sidebar.setBackground(new Color(41, 128, 185));
         sidebar.setPreferredSize(new Dimension(250, getHeight()));
-        sidebar.setLayout(new BoxLayout(sidebar, BoxLayout.Y_AXIS));
+        sidebar.setLayout(new BoxLayout(sidebar, BoxLayout.Y_AXIS)); // Perbaiki: gunakan BoxLayout
         
         // Header sidebar
         JLabel titleLabel = new JLabel("Hospital Management", SwingConstants.CENTER);
@@ -38,26 +39,29 @@ public class DashboardForm extends JFrame {
         for (int i = 0; i < menus.length; i++) {
             JButton menuBtn = createMenuButton(icons[i] + " " + menus[i]);
             final String menuName = menus[i];
-            menuBtn.addActionListener(e -> {
-                if (menuName.equals("Keluar")) {
-                    System.exit(0);
-                } else if (menuName.equals("Dashboard")) {
-                    cardLayout.show(contentPanel, "Dashboard");
-                } else if (menuName.equals("Data Perawat")) {
-                    cardLayout.show(contentPanel, "Perawat");
-                    refreshPanel("Perawat");
-                } else if (menuName.equals("Data Pasien")) {
-                    cardLayout.show(contentPanel, "Pasien");
-                    refreshPanel("Pasien");
-                } else if (menuName.equals("Data Obat")) {
-                    cardLayout.show(contentPanel, "Obat");
-                    refreshPanel("Obat");
-                } else if (menuName.equals("Data Ruangan")) {
-                    cardLayout.show(contentPanel, "Ruangan");
-                    refreshPanel("Ruangan");
-                } else if (menuName.equals("Pendaftaran")) {
-                    cardLayout.show(contentPanel, "Pendaftaran");
-                    refreshPanel("Pendaftaran");
+            menuBtn.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    if (menuName.equals("Keluar")) {
+                        System.exit(0);
+                    } else if (menuName.equals("Dashboard")) {
+                        cardLayout.show(contentPanel, "Dashboard");
+                    } else if (menuName.equals("Data Perawat")) {
+                        cardLayout.show(contentPanel, "Perawat");
+                        refreshPanel("Perawat");
+                    } else if (menuName.equals("Data Pasien")) {
+                        cardLayout.show(contentPanel, "Pasien");
+                        refreshPanel("Pasien");
+                    } else if (menuName.equals("Data Obat")) {
+                        cardLayout.show(contentPanel, "Obat");
+                        refreshPanel("Obat");
+                    } else if (menuName.equals("Data Ruangan")) {
+                        cardLayout.show(contentPanel, "Ruangan");
+                        refreshPanel("Ruangan");
+                    } else if (menuName.equals("Pendaftaran")) {
+                        cardLayout.show(contentPanel, "Pendaftaran");
+                        refreshPanel("Pendaftaran");
+                    }
                 }
             });
             sidebar.add(menuBtn);
@@ -105,11 +109,11 @@ public class DashboardForm extends JFrame {
     
     private void refreshPanel(String panelName) {
         Component comp = null;
-        if (panelName.equals("Perawat")) comp = (FormPerawat) contentPanel.getComponent(1);
-        else if (panelName.equals("Pasien")) comp = (FormPasien) contentPanel.getComponent(2);
-        else if (panelName.equals("Obat")) comp = (FormObat) contentPanel.getComponent(3);
-        else if (panelName.equals("Ruangan")) comp = (FormRuangan) contentPanel.getComponent(4);
-        else if (panelName.equals("Pendaftaran")) comp = (FormPendaftaran) contentPanel.getComponent(5);
+        if (panelName.equals("Perawat")) comp = contentPanel.getComponent(1);
+        else if (panelName.equals("Pasien")) comp = contentPanel.getComponent(2);
+        else if (panelName.equals("Obat")) comp = contentPanel.getComponent(3);
+        else if (panelName.equals("Ruangan")) comp = contentPanel.getComponent(4);
+        else if (panelName.equals("Pendaftaran")) comp = contentPanel.getComponent(5);
         
         if (comp != null) {
             if (comp instanceof FormPerawat) ((FormPerawat) comp).refreshTable();
@@ -182,13 +186,16 @@ public class DashboardForm extends JFrame {
     }
     
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            try {
-                UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-            } catch (Exception e) {
-                e.printStackTrace();
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                new DashboardForm().setVisible(true);
             }
-            new DashboardForm().setVisible(true);
         });
     }
 }
